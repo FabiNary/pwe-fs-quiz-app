@@ -71,7 +71,7 @@
                     ></v-text-field>
                   </v-list-item-action>
                   <v-list-item-action>
-                    <v-btn @click="updateQuizPeriod(student.id)" color="primary">Aktualisieren</v-btn>
+                    <v-btn @click="updateQuizPeriod(student.quizCreationId)" color="primary">Aktualisieren</v-btn>
                   </v-list-item-action>
                 </v-list-item>
               </v-list-item-group>
@@ -185,14 +185,32 @@ export default defineComponent({
       showToast('Fehler beim Hochladen der CSV-Datei', 'red');
     };
 
-    const updateQuizPeriod = async (studentId: string) => {
-      if (!selectedCourse.value || !studentQuizPeriods.value[studentId]) {
+    const updateQuizPeriod = async (quizId: string) => {
+      if (!selectedCourse.value || !studentQuizPeriods.value[quizId]) {
         showToast('Bitte geben Sie einen Kurs und einen Bearbeitungszeitraum ein.', 'red');
         return;
       }
 
-      // Platzhalter für die API-Kommunikation
-      showToast('Bearbeitungszeitraum erfolgreich aktualisiert!', 'green');
+      try {
+        const response = await quizApi.quizControllerUpdateEditableTill(
+          selectedCourse.value,
+          quizId,
+          studentQuizPeriods.value[quizId]
+        );
+
+        if ([200, 201].includes(response.status)) {
+          showToast('Bearbeitungszeitraum erfolgreich aktualisiert!', 'green');
+          return;
+        }
+
+        showToast('Bei der Aktualisierung des Bearbeitungszeitraums ist etwas schief gelaufen.', 'red');
+      } catch (error) {
+        if (error.response && error.response.status === 404) {
+          showToast('Kein Quiz mit der angegebenen Quiz-ID vorhanden.', 'red');
+        } else {
+          showToast('Ein unerwarteter Fehler ist aufgetreten.', 'red');
+        }
+      }
     };
 
     const downloadQuizResults = async () => {
