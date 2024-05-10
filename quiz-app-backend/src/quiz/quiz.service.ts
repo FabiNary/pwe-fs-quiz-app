@@ -78,7 +78,7 @@ export class QuizService {
     getEditableTill(courseName: string, quizId: string): Date {
         const quizPath = join(this.baseDir, courseName, 'quizzes', `${quizId}.json`);
         if (!existsSync(quizPath)) {
-            throw new NotFoundException(`Quiz '${quizId}' im Kurs '${courseName}' nicht gefunden`);
+           return null;
         }
         const quizData = JSON.parse(readFileSync(quizPath, 'utf-8'));
         return new Date(quizData.editableTill);

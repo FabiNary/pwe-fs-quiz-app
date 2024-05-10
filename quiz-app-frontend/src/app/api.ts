@@ -26,6 +26,19 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerM
 /**
  * 
  * @export
+ * @interface EditableTillDto
+ */
+export interface EditableTillDto {
+    /**
+     * Bearbeitungszeitraum
+     * @type {string}
+     * @memberof EditableTillDto
+     */
+    'editableTill': string;
+}
+/**
+ * 
+ * @export
  * @interface QuestionWithCorrectAnswerDto
  */
 export interface QuestionWithCorrectAnswerDto {
@@ -463,6 +476,44 @@ export const QuizApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
+         * @summary Gibt den aktuelle Bearbeitungszeitraum eines Quizzes zurück
+         * @param {string} courseName 
+         * @param {string} quizId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        quizControllerGetEditableTill: async (courseName: string, quizId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'courseName' is not null or undefined
+            assertParamExists('quizControllerGetEditableTill', 'courseName', courseName)
+            // verify required parameter 'quizId' is not null or undefined
+            assertParamExists('quizControllerGetEditableTill', 'quizId', quizId)
+            const localVarPath = `/quiz/getEditableTill/course/{courseName}/quiz/{quizId}`
+                .replace(`{${"courseName"}}`, encodeURIComponent(String(courseName)))
+                .replace(`{${"quizId"}}`, encodeURIComponent(String(quizId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Gibt alle Fragen eines bestimmten Quizzes ohne Antworten zurück
          * @param {string} course 
          * @param {string} quizId 
@@ -584,6 +635,20 @@ export const QuizApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Gibt den aktuelle Bearbeitungszeitraum eines Quizzes zurück
+         * @param {string} courseName 
+         * @param {string} quizId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async quizControllerGetEditableTill(courseName: string, quizId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EditableTillDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.quizControllerGetEditableTill(courseName, quizId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['QuizApi.quizControllerGetEditableTill']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Gibt alle Fragen eines bestimmten Quizzes ohne Antworten zurück
          * @param {string} course 
          * @param {string} quizId 
@@ -648,6 +713,17 @@ export const QuizApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
+         * @summary Gibt den aktuelle Bearbeitungszeitraum eines Quizzes zurück
+         * @param {string} courseName 
+         * @param {string} quizId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        quizControllerGetEditableTill(courseName: string, quizId: string, options?: any): AxiosPromise<EditableTillDto> {
+            return localVarFp.quizControllerGetEditableTill(courseName, quizId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Gibt alle Fragen eines bestimmten Quizzes ohne Antworten zurück
          * @param {string} course 
          * @param {string} quizId 
@@ -706,6 +782,19 @@ export class QuizApi extends BaseAPI {
      */
     public quizControllerAddQuizSolution(courseName: string, quizId: string, studentId: string, quizSolutionDto: QuizSolutionDto, options?: RawAxiosRequestConfig) {
         return QuizApiFp(this.configuration).quizControllerAddQuizSolution(courseName, quizId, studentId, quizSolutionDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Gibt den aktuelle Bearbeitungszeitraum eines Quizzes zurück
+     * @param {string} courseName 
+     * @param {string} quizId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof QuizApi
+     */
+    public quizControllerGetEditableTill(courseName: string, quizId: string, options?: RawAxiosRequestConfig) {
+        return QuizApiFp(this.configuration).quizControllerGetEditableTill(courseName, quizId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

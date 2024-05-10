@@ -7,6 +7,7 @@ import {StudentService} from "../student/student.service";
 import {QuizSolutionDto} from "./quiz-solution.dto";
 import {generateFilename} from "../utils/generateFileName";
 import {QuestionWithoutCorrectAnswerDto} from "./question-without-correct-answer.dto";
+import {EditableTillDto} from "./editable-till.dto";
 
 @ApiTags('Quiz')
 @Controller('quiz')
@@ -53,8 +54,6 @@ export class QuizController {
         return quizWithoutAnswers;
     }
 
-
-
     @Post('addQuizSolution/course/:courseName/quiz/:quizId/student/:studentId')
     @ApiOperation({
         summary: 'Fügt eine Quiz-Lösung für einen bestimmten Studenten hinzu',
@@ -73,7 +72,7 @@ export class QuizController {
         const dateNow = new Date();
         const editableTill = this.quizService.getEditableTill(courseDir, quizId);
 
-        if(editableTill < dateNow) {
+        if(!editableTill || editableTill < dateNow) {
             throw new BadRequestException(`Das Quiz '${quizId}' darf nicht mehr bearbeitet werden. Bearbeitungsfrist war '${editableTill}'`);
         }
 
@@ -99,7 +98,28 @@ export class QuizController {
 
         return {
             message: `Bearbeitungsfrist für Quiz '${quizId}' erfolgreich aktualisiert`,
-            editableTill: newEditableTill.toISOString(),
+        };
+    }
+
+    @Get('getEditableTill/course/:courseName/quiz/:quizId')
+    @ApiOperation({
+        summary: 'Gibt den aktuelle Bearbeitungszeitraum eines Quizzes zurück',
+    })
+    @ApiResponse({
+        status: 200,
+        description: 'Bearbeitungszeitraum',
+        type: EditableTillDto
+    })
+    getEditableTill(
+        @Param('courseName') courseName: string,
+        @Param('quizId') quizId: string,
+    ) {
+        const courseDir = generateFilename(courseName);
+
+        const editableTill = this.quizService.getEditableTill(courseDir, quizId);
+
+        return {
+            editableTill: editableTill ? editableTill.toISOString() : null,
         };
     }
 }

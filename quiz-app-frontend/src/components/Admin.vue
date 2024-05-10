@@ -12,10 +12,11 @@
         <v-row>
           <v-col cols="6">
             <v-list>
-              <v-list-item-group  v-model="selectedCourse">
+              <v-list-item-group v-model="selectedCourse">
                 <v-list-item
                   v-for="course in courses"
                   :key="course"
+                  :value="course"
                   @click="selectCourse(course)"
                 >
                   <v-list-item-content>{{ course }}</v-list-item-content>
@@ -67,7 +68,6 @@
                       v-model="studentQuizPeriods[student.quizCreationId]"
                       label="Bearbeitungszeitraum ändern"
                       type="datetime-local"
-                      @focus="loadStudentQuizPeriod(student.quizCreationId)"
                     ></v-text-field>
                   </v-list-item-action>
                   <v-list-item-action>
@@ -92,8 +92,8 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue';
-import {OpenAPIDefaultConfig} from "../utils/openAPIDefaultConfig";
-import {CoursesApi, StudentApi, StudentDto} from "../app";
+import { OpenAPIDefaultConfig } from '../utils/openAPIDefaultConfig';
+import {CoursesApi, QuizApi, StudentApi, StudentDto} from '../app';
 
 export default defineComponent({
   name: 'Admin',
@@ -103,10 +103,7 @@ export default defineComponent({
     const selectedCourse = ref<string | null>(null);
     const newCourseName = ref<string>('');
     const csvFile = ref<File | null>(null);
-    const studentQuizPeriods = ref<{ [key: string]: string }>({
-      '1': '2024-05-20T14:00',
-      '2': '2024-05-21T16:00',
-    });
+    const studentQuizPeriods = ref<{ [key: string]: string }>({});
     const toast = ref({
       visible: false,
       message: '',
@@ -114,6 +111,7 @@ export default defineComponent({
     });
     const courseApi = new CoursesApi(OpenAPIDefaultConfig);
     const studentApi = new StudentApi(OpenAPIDefaultConfig);
+    const quizApi = new QuizApi(OpenAPIDefaultConfig);
 
     const fetchCourses = async () => {
       const response = await courseApi.courseControllerGetCourses();
@@ -128,20 +126,27 @@ export default defineComponent({
     const fetchStudentsByCourse = async (course: string) => {
       const response = await studentApi.studentControllerGetStudentsByCourse(course);
 
-      if([200, 201].includes(response.status)) {
+      if ([200, 201].includes(response.status)) {
         students.value = response.data;
+        initializeStudentQuizPeriods().then(r => r);
         return;
       }
 
       showToast('Es ist ein Fehler aufgetreten', 'red');
-
-      initializeStudentQuizPeriods();
     };
 
-    const initializeStudentQuizPeriods = () => {
+    const initializeStudentQuizPeriods = async () => {
       studentQuizPeriods.value = {};
       for (const student of students.value) {
-        studentQuizPeriods.value[student.id] = '';
+        const response = await quizApi.quizControllerGetEditableTill(selectedCourse.value, student.quizCreationId);
+
+        if (![200, 201].includes(response.status)) continue;
+        if(!response.data.editableTill) continue;
+
+        console.log("editable till: " + formatDateTimeLocal(new Date(response.data.editableTill).toISOString()))
+        studentQuizPeriods.value[student.quizCreationId] = formatDateTimeLocal(new Date(response.data.editableTill).toISOString());
+
+
       }
     };
 
@@ -153,7 +158,7 @@ export default defineComponent({
 
       const response = await courseApi.courseControllerAddCourse(newCourseName.value);
 
-      if([200, 201].includes(response.status)) {
+      if ([200, 201].includes(response.status)) {
         courses.value.push(newCourseName.value);
         newCourseName.value = '';
         showToast('Kurs erfolgreich erstellt!', 'green');
@@ -169,15 +174,15 @@ export default defineComponent({
         return;
       }
 
-      const response = await studentApi.studentControllerAddStudentsAsCsv(selectedCourse.value, csvFile.value)
+      const response = await studentApi.studentControllerAddStudentsAsCsv(selectedCourse.value, csvFile.value);
 
-      if([200, 201].includes(response.status)) {
+      if ([200, 201].includes(response.status)) {
         showToast('CSV erfolgreich hochgeladen!', 'green');
-        fetchStudentsByCourse(selectedCourse.value).then(r => r)
+        await fetchStudentsByCourse(selectedCourse.value);
         return;
       }
 
-      showToast('Fehler beim hochladen der CSV-Datei', 'red');
+      showToast('Fehler beim Hochladen der CSV-Datei', 'red');
     };
 
     const updateQuizPeriod = async (studentId: string) => {
@@ -200,27 +205,9 @@ export default defineComponent({
       showToast('Quizergebnisse erfolgreich heruntergeladen!', 'green');
     };
 
-    const loadStudentQuizPeriod = async (quizId: string): Promise<string> => {
-      if (!selectedCourse.value) {
-        showToast('Bitte wählen Sie einen Kurs aus.', 'red');
-        return;
-      }
-
-      try {
-        // Platzhalter für die API-Funktionalität
-        // Ersetzen Sie diesen Teil durch einen tatsächlichen API-Aufruf
-        const response = {
-          data: '2024-05-20T14:00', // Beispielwert
-        };
-
-        if (response.data) {
-          studentQuizPeriods.value[quizId] = response.data;
-        } else {
-          showToast('Kein Bearbeitungszeitraum gefunden.', 'red');
-        }
-      } catch (error) {
-        showToast('Fehler beim Abrufen des Bearbeitungszeitraums.', 'red');
-      }
+    const formatDateTimeLocal = (dateTimeString: string): string => {
+      const date = new Date(dateTimeString);
+      return date.toISOString().slice(0, 16);
     };
 
     const showToast = (message: string, color: string) => {
@@ -246,7 +233,6 @@ export default defineComponent({
       uploadCsv,
       updateQuizPeriod,
       downloadQuizResults,
-      loadStudentQuizPeriod,
       showToast,
     };
   },
