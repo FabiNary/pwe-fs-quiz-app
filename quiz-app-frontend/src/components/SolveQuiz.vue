@@ -33,7 +33,7 @@
 
         <v-snackbar v-model="toast.visible" :color="toast.color" top>
           {{ toast.message }}
-          <v-btn color="white" text @click="toast.visible = false">Schließen</v-btn>
+          <v-btn color="white" @click="toast.visible = false">Schließen</v-btn>
         </v-snackbar>
       </v-card-text>
     </v-card>
@@ -43,7 +43,6 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import axios from 'axios';
 import {QuestionWithoutCorrectAnswerDto, QuizApi, QuizSolutionDto} from "../app";
 import {OpenAPIDefaultConfig} from "../utils/openAPIDefaultConfig";
 

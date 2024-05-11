@@ -53,9 +53,6 @@ export class StudentService {
 
     if (!existsSync(studentsFile)) return [];
 
-    const students: StudentDto[] = JSON.parse(
-      readFileSync(studentsFile, 'utf-8'),
-    );
     return JSON.parse(readFileSync(studentsFile, 'utf-8'));
   }
 
@@ -96,10 +93,10 @@ export class StudentService {
       const formattedDuration = duration.toISOString();
 
       this.mailerService.sendMail({
-        to: student.email,
-        subject: `Quiz verfügbar im Kurs "${courseName}"`,
-        text: `Hallo ${student.name},\n\nDas Quiz im Kurs "${courseName}" ist jetzt verfügbar.\n\nBitte bearbeiten Sie es bis zum ${formattedDuration} unter folgendem Link: ${quizUrl}`,
-      });
+          to: student.email,
+          subject: `Quiz verfügbar im Kurs "${courseName}"`,
+          text: `Hallo ${student.name},\n\nDas Quiz im Kurs "${courseName}" ist jetzt verfügbar.\n\nBitte bearbeiten Sie es bis zum ${formattedDuration} unter folgendem Link: ${quizUrl}`,
+      }).then(r => r);
     });
   }
   private buildUrl(base, params) {

@@ -5,6 +5,7 @@ import { CourseModule } from './course/course.module';
 import { QuizModule } from './quiz/quiz.module';
 import {MailerModule} from "./mailer/mailer.module";
 import {ConfigModule} from "@nestjs/config";
+import {AuthModule} from "./auth/auth.module";
 
 @Module({
   imports: [
@@ -14,6 +15,8 @@ import {ConfigModule} from "@nestjs/config";
     MailerModule,
     StudentModule,
     CourseModule,
-    QuizModule],
+    QuizModule,
+    AuthModule
+  ],
 })
 export class AppModule {}

@@ -13,6 +13,7 @@ declare module 'vue' {
     Dashboard: typeof import('./src/components/Dashboard.vue')['default']
     Header: typeof import('./src/components/Header.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
+    Login: typeof import('./src/components/Login.vue')['default']
     QuestionOutput: typeof import('./src/components/QuestionOutput.vue')['default']
     Quiz: typeof import('./src/components/Quiz.vue')['default']
     Registration: typeof import('./src/components/Registration.vue')['default']
