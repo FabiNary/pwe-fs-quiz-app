@@ -77,13 +77,13 @@
               </v-list-item-group>
             </v-list>
             <v-divider class="my-4"></v-divider>
-            <v-btn @click="downloadQuizResults" color="primary">Quizergebnisse herunterladen</v-btn>
+            <v-btn @click="downloadQuizResults" color="primary">Quiz-Ergebnisse herunterladen</v-btn>
           </v-col>
         </v-row>
 
         <v-snackbar v-model="toast.visible" :color="toast.color" top>
           {{ toast.message }}
-          <v-btn color="white" text @click="toast.visible = false">Schließen</v-btn>
+          <v-btn color="white" @click="toast.visible = false">Schließen</v-btn>
         </v-snackbar>
       </v-card-text>
     </v-card>
@@ -94,7 +94,7 @@
 import { defineComponent, ref, onMounted } from 'vue';
 import { OpenAPIDefaultConfig } from '../utils/openAPIDefaultConfig';
 import {CoursesApi, QuizApi, StudentApi, StudentDto} from '../app';
-
+import { useObjectUrl } from '@vueuse/core'
 export default defineComponent({
   name: 'Admin',
   setup() {
@@ -143,7 +143,6 @@ export default defineComponent({
         if (![200, 201].includes(response.status)) continue;
         if(!response.data.editableTill) continue;
 
-        console.log("editable till: " + formatDateTimeLocal(new Date(response.data.editableTill).toISOString()))
         studentQuizPeriods.value[student.quizCreationId] = formatDateTimeLocal(new Date(response.data.editableTill).toISOString());
 
 
@@ -219,8 +218,29 @@ export default defineComponent({
         return;
       }
 
-      // Platzhalter für die API-Kommunikation
-      showToast('Quizergebnisse erfolgreich heruntergeladen!', 'green');
+      try {
+        const response = await courseApi.courseControllerGetStudentSolutionsAsZip(selectedCourse.value, {
+          responseType: 'blob',
+        });
+
+        const zipUrl = useObjectUrl(new Blob([response.data]));
+
+        if(!zipUrl['_value']) {
+          showToast('Fehler beim Erzeugen des ZIP-Downloads', 'red');
+          return;
+        }
+
+        const link = document.createElement('a');
+        link.href = zipUrl['_value'];
+        link.setAttribute('download', `${selectedCourse.value}-solutions.zip`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        showToast('Quiz-Ergebnisse erfolgreich heruntergeladen!', 'green');
+      } catch (error: any) {
+        showToast('Fehler beim Herunterladen der Quiz-Ergebnisse.', 'red');
+      }
     };
 
     const formatDateTimeLocal = (dateTimeString: string): string => {
