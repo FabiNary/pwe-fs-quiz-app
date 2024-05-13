@@ -24,7 +24,7 @@ RUN npm run build
 FROM nginx:alpine
 
 # Kopieren der Frontend-Build-Artefakte zum Nginx-Server
-COPY --from=frontend-build-stage /app/dist /var/www/html
+COPY --from=frontend-build-stage /app/dist /usr/share/nginx/html
 COPY --from=backend-build-stage /usr/src/app/ /backend
 
 # Anpassen der Nginx-Konfiguration für das Routing und das Ausführen des Node.js-Servers
@@ -37,4 +37,4 @@ RUN apk add supervisor
 
 EXPOSE 80 3001
 
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+CMD ["nginx", "-g", "daemon off;"]
