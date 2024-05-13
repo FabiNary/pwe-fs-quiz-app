@@ -1,5 +1,9 @@
 import {Configuration} from "../app";
 
+
+// @ts-ignore
+const backendURL = import.meta.env.VITE_BACKEND_URL;
+
 export const OpenAPIDefaultConfig = new Configuration({
-  basePath: 'http://localhost:3001', // Ihre Backend-URL
+  basePath: backendURL ? backendURL : undefined
 });

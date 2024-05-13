@@ -2,3 +2,4 @@
 /quiz-app-backend/dist/
 .idea
 node_modules
+.env

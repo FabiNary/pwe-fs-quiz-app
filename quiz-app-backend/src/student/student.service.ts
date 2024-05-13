@@ -6,11 +6,20 @@ import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { uuid } from 'uuidv4';
 import { parse } from 'csv-parse/sync';
 import { MailerService } from '@nestjs-modules/mailer';
+import {ConfigService} from "@nestjs/config";
 
 @Injectable()
 export class StudentService {
-  private readonly baseDir = join(__dirname, '..', 'data', 'courses');
-  constructor(private readonly mailerService: MailerService) {}
+
+  private readonly baseDir: string;
+  private readonly backendUrl: string;
+  constructor(
+      private readonly configService: ConfigService,
+      private readonly mailerService: MailerService
+  ) {
+    this.baseDir = configService.get<string>('QUIZ_DATA_DIR');
+    this.backendUrl = configService.get<string>('BACKEND_URL');
+  }
 
   addStudentsFromCsv(courseName: string, csvContent: string): void {
     const dirName = generateFilename(courseName);
@@ -60,11 +69,10 @@ export class StudentService {
     courseName: string,
     students: StudentDto[],
   ): Promise<void> {
-    const baseUrl = 'http://localhost:3000';
 
     for (let i = 0; i < students.length; i++) {
       const student = students[i];
-      const quizCreationUrl = this.buildUrl(`${baseUrl}/create-quiz`, {
+      const quizCreationUrl = this.buildUrl(`${this.backendUrl}/create-quiz`, {
         course: courseName,
         quizId: student.quizCreationId,
       });
@@ -83,9 +91,8 @@ export class StudentService {
     quizId: string,
     duration: Date,
   ): void {
-    const baseUrl = 'http://localhost:3000';
     students.forEach((student) => {
-      const quizUrl = this.buildUrl(`${baseUrl}/quiz`, {
+      const quizUrl = this.buildUrl(`${this.backendUrl}/quiz`, {
         course: courseName,
         quizId: quizId,
         studentId: student.id,

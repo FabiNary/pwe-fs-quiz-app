@@ -9,15 +9,19 @@ import { PassThrough, Readable } from 'stream';
 import {tmpdir} from "os";
 import * as archiver from 'archiver';
 import {StudentDto} from "../student/student.dto";
+import {ConfigService} from "@nestjs/config";
 
 @Injectable()
 export class CourseService {
-    private readonly baseDir = join(__dirname, '..', 'data', 'courses');
+    private readonly baseDir: string;
 
     constructor(
         private readonly studentService: StudentService,
-        private readonly quizService: QuizService
-    ) {}
+        private readonly quizService: QuizService,
+        private readonly configService: ConfigService
+    ) {
+        this.baseDir = configService.get<string>('QUIZ_DATA_DIR');
+    }
 
     createCourseDirectory(courseName: string): string {
         const dirName = generateFilename(courseName);

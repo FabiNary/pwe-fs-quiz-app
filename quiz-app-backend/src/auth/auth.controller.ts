@@ -9,7 +9,7 @@ export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
     @Post('login')
-    @ApiOperation({ summary: 'Authenticate a user' })
+    @ApiOperation({ summary: 'Authentifiziert den Nutzer' })
     @ApiBody({
         description: 'User credentials',
         type: AdminUserDto

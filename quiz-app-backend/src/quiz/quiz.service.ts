@@ -5,14 +5,18 @@ import {QuestionWithCorrectAnswerDto} from "./question-with-correct-answer.dto";
 import {QuizDto} from "./quiz.dto";
 import {QuizSolutionDto} from "./quiz-solution.dto";
 import {QuestionWithoutCorrectAnswerDto} from "./question-without-correct-answer.dto";
+import {ConfigService} from "@nestjs/config";
 
 
 
 @Injectable()
 export class QuizService {
-    constructor() {}
-
-    private readonly baseDir = join(__dirname, '..', 'data', 'courses');
+    private readonly baseDir: string;
+    constructor(
+        private readonly configService: ConfigService
+    ) {
+        this.baseDir = configService.get<string>('QUIZ_DATA_DIR');
+    }
 
     getQuestionsWithoutAnswers(courseDir: string, quizId: string) {
         const quizPath = join(this.baseDir, courseDir, 'quizzes', `${quizId}.json`);
