@@ -18,7 +18,7 @@ export class StudentService {
       private readonly mailerService: MailerService
   ) {
     this.baseDir = configService.get<string>('QUIZ_DATA_DIR');
-    this.backendUrl = configService.get<string>('BACKEND_URL');
+    this.backendUrl = configService.get<string>('BASE_URL');
   }
 
   addStudentsFromCsv(courseName: string, csvContent: string): void {

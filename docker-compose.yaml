@@ -5,13 +5,13 @@ services:
       context: .
       dockerfile: docker/Dockerfile
     environment:
-      - SMTP_HOST=127.0.0.1
-      - SMTP_PORT=2525
+      - SMTP_HOST=mailserver
+      - SMTP_PORT=1025
       - SMTP_PASS=password
       - SMTP_USER=admin
       - QUIZ_DATA_DIR=/opt/data
       - BACKEND_URL=http://localhost/api
-      - VITE_BACKEND_URL=http://localhost/api
+      - BASE_URL=http://localhost
     volumes:
       - ./data:/opt/data
     ports:
@@ -19,8 +19,9 @@ services:
     networks:
       - app-network
 
-  maildev:
+  mailserver:
     image: maildev/maildev
+    container_name: mailserver
     ports:
       - "1080:1080"
       - "1025:1025"
