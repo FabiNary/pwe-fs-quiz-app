@@ -24,15 +24,17 @@ RUN npm run build
 FROM nginx:alpine
 
 # Kopieren der Frontend-Build-Artefakte zum Nginx-Server
-COPY --from=frontend-build-stage /app/dist /usr/share/nginx/html
-COPY --from=backend-build-stage /usr/src/app/dist /backend
+COPY --from=frontend-build-stage /app/dist /var/www/html
+COPY --from=backend-build-stage /usr/src/app/ /backend
 
 # Anpassen der Nginx-Konfiguration für das Routing und das Ausführen des Node.js-Servers
 COPY ./docker/nginx.conf /etc/nginx/nginx.conf
+COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Installieren von Node.js in Nginx Container
 RUN apk add --update nodejs npm
+RUN apk add supervisor
 
-EXPOSE 80
+EXPOSE 80 3001
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
