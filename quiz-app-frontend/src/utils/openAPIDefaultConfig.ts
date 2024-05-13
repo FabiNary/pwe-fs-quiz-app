@@ -5,5 +5,5 @@ import {Configuration} from "../app";
 const backendURL = import.meta.env.VITE_BACKEND_URL;
 
 export const OpenAPIDefaultConfig = new Configuration({
-  basePath: backendURL ? backendURL : undefined
+  basePath: backendURL ? backendURL : "/api"
 });

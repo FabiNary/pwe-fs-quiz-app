@@ -37,4 +37,4 @@ RUN apk add supervisor
 
 EXPOSE 80 3001
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
