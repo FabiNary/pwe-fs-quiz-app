@@ -6,16 +6,15 @@ import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { uuid } from 'uuidv4';
 import { parse } from 'csv-parse/sync';
 import { MailerService } from '@nestjs-modules/mailer';
-import {ConfigService} from "@nestjs/config";
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class StudentService {
-
   private readonly baseDir: string;
   private readonly backendUrl: string;
   constructor(
-      private readonly configService: ConfigService,
-      private readonly mailerService: MailerService
+    private readonly configService: ConfigService,
+    private readonly mailerService: MailerService,
   ) {
     this.baseDir = configService.get<string>('QUIZ_DATA_DIR');
     this.backendUrl = configService.get<string>('BASE_URL');
@@ -69,7 +68,6 @@ export class StudentService {
     courseName: string,
     students: StudentDto[],
   ): Promise<void> {
-
     for (let i = 0; i < students.length; i++) {
       const student = students[i];
       const quizCreationUrl = this.buildUrl(`${this.backendUrl}/create-quiz`, {
@@ -99,11 +97,13 @@ export class StudentService {
       });
       const formattedDuration = duration.toISOString();
 
-      this.mailerService.sendMail({
+      this.mailerService
+        .sendMail({
           to: student.email,
           subject: `Quiz verfügbar im Kurs "${courseName}"`,
           text: `Hallo ${student.name},\n\nDas Quiz im Kurs "${courseName}" ist jetzt verfügbar.\n\nBitte bearbeiten Sie es bis zum ${formattedDuration} unter folgendem Link: ${quizUrl}`,
-      }).then(r => r);
+        })
+        .then((r) => r);
     });
   }
   private buildUrl(base, params) {

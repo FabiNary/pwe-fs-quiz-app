@@ -60,10 +60,7 @@ export class QuizController {
     @Param('quizId') quizId: string,
   ): Promise<QuestionWithoutCorrectAnswerDto[]> {
     const courseDir = generateFilename(courseName);
-      this.quizService.getQuestionsWithoutAnswers(
-          courseDir,
-          quizId,
-      );
+    this.quizService.getQuestionsWithoutAnswers(courseDir, quizId);
     return this.quizService.getQuestionsWithoutAnswers(courseDir, quizId);
   }
 

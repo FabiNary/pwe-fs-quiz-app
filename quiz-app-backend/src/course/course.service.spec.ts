@@ -6,7 +6,7 @@ import { QuizService } from '../quiz/quiz.service';
 import * as fs from 'fs';
 import { tmpdir } from 'os';
 import { QuizDto } from '../quiz/quiz.dto';
-import {StudentDto} from "../student/student.dto";
+import { StudentDto } from '../student/student.dto';
 
 describe('CourseService', () => {
   let courseService: CourseService;
@@ -124,10 +124,7 @@ describe('CourseService', () => {
 
     //when
 
-    const result = courseService.transformIdsInStudentNames(
-      students,
-      quizzes,
-    );
+    const result = courseService.transformIdsInStudentNames(students, quizzes);
 
     //then
 
@@ -166,8 +163,8 @@ describe('CourseService', () => {
     };
     const expected = {
       'alice-mueller': 'Alice Müller\nHans Schmitz;1:a,2:b',
-      'hans-schmitz': 'Hans Schmitz\nAlice Müller;1:a,2:b'
-    }
+      'hans-schmitz': 'Hans Schmitz\nAlice Müller;1:a,2:b',
+    };
     // when
     const result = courseService.createAnswersCsvStrings(given);
 

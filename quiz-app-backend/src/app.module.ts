@@ -3,9 +3,9 @@ import { Module } from '@nestjs/common';
 import { StudentModule } from './student/student.module';
 import { CourseModule } from './course/course.module';
 import { QuizModule } from './quiz/quiz.module';
-import {MailerModule} from "./mailer/mailer.module";
-import {ConfigModule} from "@nestjs/config";
-import {AuthModule} from "./auth/auth.module";
+import { MailerModule } from './mailer/mailer.module';
+import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -16,7 +16,7 @@ import {AuthModule} from "./auth/auth.module";
     StudentModule,
     CourseModule,
     QuizModule,
-    AuthModule
+    AuthModule,
   ],
 })
 export class AppModule {}

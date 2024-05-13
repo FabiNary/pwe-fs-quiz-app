@@ -1,18 +1,20 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import {writeFileSync} from "fs";
-import {join} from "path";
+import { writeFileSync } from 'fs';
+import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()
-      .setTitle('Quiz App API')
-      .setDescription('Dies ist die API-Beschreibung für die Quiz-App API. Sie Bestandteil der Projektabgabe im Fach Projekt: Web-Entwicklung')
-      .setVersion('1.0')
-      .addTag('Beispiele')
-      .build();
+    .setTitle('Quiz App API')
+    .setDescription(
+      'Dies ist die API-Beschreibung für die Quiz-App API. Sie Bestandteil der Projektabgabe im Fach Projekt: Web-Entwicklung',
+    )
+    .setVersion('1.0')
+    .addTag('Beispiele')
+    .build();
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('spec', app, document);
