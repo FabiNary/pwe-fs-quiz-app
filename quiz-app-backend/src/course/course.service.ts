@@ -120,12 +120,6 @@ export class CourseService {
   bringStudentAnswersIntoArrayFormat(studentAnswers: any): {
     [s: string]: Array<Array<string>>;
   } {
-    const answerMapping = {
-      1: 'a',
-      2: 'b',
-      3: 'c',
-      4: 'd',
-    };
     const objContainsArrays = {};
 
     studentAnswers.forEach((studentAnswer) => {
@@ -138,7 +132,7 @@ export class CourseService {
         Object.keys(studentAnswer.answers[answeringStudentName]).forEach(
           (questionNumber) => {
             array2.push(
-              `${questionNumber}:${answerMapping[studentAnswer.answers[answeringStudentName][questionNumber]]}`,
+              `${questionNumber}:${this.getAnswerMapping(studentAnswer.answers[answeringStudentName][questionNumber])}`,
             );
           },
         );
@@ -149,6 +143,16 @@ export class CourseService {
     });
 
     return objContainsArrays;
+  }
+
+  getAnswerMapping(num: number): string {
+    if (num < 1 || num > 21) {
+      return '';
+    }
+
+    // Berechne den entsprechenden Buchstaben im Alphabet
+    const charCode = 'a'.charCodeAt(0) + num - 1;
+    return String.fromCharCode(charCode);
   }
 
   createAnswersCsvStrings(answers: { [s: string]: Array<Array<string>> }) {
@@ -189,6 +193,11 @@ export class CourseService {
     const tempDir = mkdtempSync(join(tmpdir(), 'solutions-'));
     const csvFiles: string[] = [];
 
+    const quizSolutionsOverviewString = this.createQuizSolutionOverview(students, quizzes);
+    const quizSolutionsOverviewPath = join(tempDir, 'Loesungen.csv');
+    writeFileSync(quizSolutionsOverviewPath, quizSolutionsOverviewString);
+    csvFiles.push(quizSolutionsOverviewPath);
+
     for (const studentId in studentFiles) {
       const csvFilePath = join(tempDir, `${studentId}.csv`);
       writeFileSync(csvFilePath, studentFiles[studentId]);
@@ -214,5 +223,25 @@ export class CourseService {
     rmdirSync(tempDir);
 
     return passThrough;
+  }
+
+  createQuizSolutionOverview(students: StudentDto[], quizzes: {[key: string]: QuizDto}) {
+    return Object.keys(quizzes).map((studentQuizId) => {
+      const matchingStudent = students.find((student) => {
+        return student.quizCreationId === studentQuizId;
+      });
+
+      if(!matchingStudent) return;
+
+      const csvRow = [matchingStudent.name];
+
+      quizzes[studentQuizId].questions.forEach((question) => {
+        csvRow.push(this.getAnswerMapping(question.correctAnswer));
+      });
+
+      return csvRow.join(';');
+    }).filter((csvRow) => {
+      return !!csvRow;
+    }).join('\n');
   }
 }

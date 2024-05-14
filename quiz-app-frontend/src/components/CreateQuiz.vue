@@ -43,7 +43,7 @@
 
         <v-snackbar v-model="toast.visible" :color="toast.color" top>
           {{ toast.message }}
-          <v-btn color="white" text @click="toast.visible = false">Schließen</v-btn>
+          <v-btn color="white" @click="toast.visible = false">Schließen</v-btn>
         </v-snackbar>
       </v-card-text>
     </v-card>
@@ -53,7 +53,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import {Configuration, QuestionWithCorrectAnswerDto, QuizApi} from "../app";
+import { QuestionWithCorrectAnswerDto, QuizApi} from "../app";
 import {OpenAPIDefaultConfig} from "../utils/openAPIDefaultConfig";
 
 export default defineComponent({
@@ -64,7 +64,7 @@ export default defineComponent({
     const quizId = ref<string>(route.query.quizId as string || '');
     const studentId = ref<string>(route.query.student as string || '');
     const questions = ref<Array<QuestionWithCorrectAnswerDto>>(
-      Array.from({ length: 2 }, (_, index) => ({
+      Array.from({ length: 10 }, (_, index) => ({
         id: index + 1,
         question: '',
         answers: {

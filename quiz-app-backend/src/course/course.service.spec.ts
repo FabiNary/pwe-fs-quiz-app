@@ -7,12 +7,15 @@ import * as fs from 'fs';
 import { tmpdir } from 'os';
 import { QuizDto } from '../quiz/quiz.dto';
 import { StudentDto } from '../student/student.dto';
+import {ConfigService} from "@nestjs/config";
 
 describe('CourseService', () => {
   let courseService: CourseService;
   let studentService: jest.Mocked<StudentService>;
   let quizService: jest.Mocked<QuizService>;
   let tempDir: string;
+  let quizzes: { [key: string]: QuizDto };
+  let students: StudentDto[];
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -25,6 +28,12 @@ describe('CourseService', () => {
         {
           provide: QuizService,
           useValue: { getQuizzesByCourseDir: jest.fn() },
+        },
+        {
+          provide: ConfigService,
+          useValue: {
+            get: jest.fn().mockReturnValue('some-config-value'),
+          },
         },
       ],
     }).compile();
@@ -39,12 +48,8 @@ describe('CourseService', () => {
     jest.spyOn(fs, 'writeFileSync').mockImplementation(() => {});
     jest.spyOn(fs, 'unlinkSync').mockImplementation(() => {});
     jest.spyOn(fs, 'rmdirSync').mockImplementation(() => {});
-  });
 
-  it('should create a zip file with student solutions', () => {
-    //given
-
-    const students: StudentDto[] = [
+    students = [
       {
         id: 'c3f7dfb9-3454-482f-a5b6-285ec5590b60',
         name: 'Alice Müller',
@@ -58,7 +63,7 @@ describe('CourseService', () => {
         quizCreationId: '2bad72a0-667e-4ed7-891f-38164ddea900',
       },
     ];
-    const quizzes: { [key: string]: QuizDto } = {
+    quizzes = {
       '0e1f2e36-e9e5-4b5b-ab0e-7ccdd24be880': {
         id: '0e1f2e36-e9e5-4b5b-ab0e-7ccdd24be880',
         created: '2024-01-01T00:00:00Z',
@@ -99,7 +104,7 @@ describe('CourseService', () => {
             id: 2,
             question: 'Q2',
             answers: { 1: 'B1', 2: 'B2', 3: 'B3', 4: 'B4' },
-            correctAnswer: 2,
+            correctAnswer: 3,
           },
         ],
         answers: {
@@ -110,7 +115,10 @@ describe('CourseService', () => {
         },
       },
     };
+  });
 
+  it('should create a zip file with student solutions', () => {
+    //given
     const expected = [
       {
         answers: { 'Hans Schmitz': { 1: 1, 2: 2 } },
@@ -172,4 +180,13 @@ describe('CourseService', () => {
 
     expect(result).toStrictEqual(expected);
   });
+
+  it('should create a solutions file', () => {
+    //given
+    const expected = 'Alice Müller;a;b\nHans Schmitz;a;c';
+    //when
+    const result = courseService.createQuizSolutionOverview(students, quizzes);
+    //then
+    expect(result).toStrictEqual(expected);
+  })
 });
