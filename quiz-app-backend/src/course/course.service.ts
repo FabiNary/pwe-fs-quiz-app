@@ -145,7 +145,9 @@ export class CourseService {
     return objContainsArrays;
   }
 
-  getAnswerMapping(num: number | string): string {
+  getAnswerMapping(num: number | string | null): string {
+    if(num === null) return '';
+
     let numToCalculate = typeof num === 'number' ? num : undefined;
 
     if(typeof num === 'string') {

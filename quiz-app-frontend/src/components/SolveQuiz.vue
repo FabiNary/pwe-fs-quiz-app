@@ -15,13 +15,17 @@
               <v-card-text>
                 <v-radio-group
                   v-model="answers[question.id]"
-                  :rules="[v => !!v || 'Bitte wählen Sie eine Antwort']"
                 >
                   <v-radio
                     v-for="(answerText, answerKey) in question.answers"
                     :key="answerKey"
                     :value="answerKey"
                     :label="answerText"
+                  ></v-radio>
+                  <v-radio
+                    :key="'noAnswer'"
+                    :value="null"
+                    :label="'Keine Antwort'"
                   ></v-radio>
                 </v-radio-group>
               </v-card-text>
@@ -79,37 +83,23 @@ export default defineComponent({
       }
     };
 
-    const validateForm = (): boolean => {
-      for (const questionId in answers.value) {
-        if (answers.value[questionId] === null) {
-          return false;
-        }
-      }
-      return true;
-    };
-
     const submitQuiz = async () => {
-      if (validateForm()) {
+      try {
 
-        try {
+        const quizSolution:QuizSolutionDto = {
+          answers: answers.value
+        }
+        const quizApi = new QuizApi(OpenAPIDefaultConfig);
 
-          const quizSolution:QuizSolutionDto = {
-            answers: answers.value
-          }
-          const quizApi = new QuizApi(OpenAPIDefaultConfig);
+        const response = await quizApi.quizControllerAddQuizSolution(course.value, quizId.value, studentId.value, quizSolution);
 
-          const response = await quizApi.quizControllerAddQuizSolution(course.value, quizId.value, studentId.value, quizSolution);
-
-          if ([200, 201].includes(response.status)) {
-            showToast('Quiz erfolgreich abgeschickt!', 'green');
-          } else {
-            showToast('Fehler beim Abschicken des Quizzes.', 'red');
-          }
-        } catch (error) {
+        if ([200, 201].includes(response.status)) {
+          showToast('Quiz erfolgreich abgeschickt!', 'green');
+        } else {
           showToast('Fehler beim Abschicken des Quizzes.', 'red');
         }
-      } else {
-        showToast('Bitte beantworten Sie alle Fragen.', 'red');
+      } catch (error) {
+        showToast('Fehler beim Abschicken des Quizzes.', 'red');
       }
     };
 
