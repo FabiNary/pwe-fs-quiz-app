@@ -74,6 +74,7 @@ describe('CourseService', () => {
             question: 'Q1',
             answers: { 1: 'A1', 2: 'A2', 3: 'A3', 4: 'A4' },
             correctAnswer: 1,
+
           },
           {
             id: 2,
@@ -84,8 +85,8 @@ describe('CourseService', () => {
         ],
         answers: {
           '4e6a0648-2c1e-4905-a615-5f4d763f0ebe': {
-            1: 1,
-            2: 2,
+            1: "1",
+            2: "2",
           },
         },
       },
@@ -109,8 +110,8 @@ describe('CourseService', () => {
         ],
         answers: {
           'c3f7dfb9-3454-482f-a5b6-285ec5590b60': {
-            1: 1,
-            2: 2,
+            1: "1",
+            2: "2",
           },
         },
       },
@@ -121,11 +122,11 @@ describe('CourseService', () => {
     //given
     const expected = [
       {
-        answers: { 'Hans Schmitz': { 1: 1, 2: 2 } },
+        answers: { 'Hans Schmitz': { 1: "1", 2: "2" } },
         student: 'Alice Müller',
       },
       {
-        answers: { 'Alice Müller': { 1: 1, 2: 2 } },
+        answers: { 'Alice Müller': { 1: "1", 2: "2" } },
         student: 'Hans Schmitz',
       },
     ];
@@ -143,17 +144,17 @@ describe('CourseService', () => {
     // given
     const given = [
       {
-        answers: { 'Hans Schmitz': { 1: 1, 2: 2 } },
+        answers: { 'Hans Schmitz': { 1: "1", 2: "2" } },
         student: 'Alice Müller',
       },
       {
-        answers: { 'Alice Müller': { 1: 1, 2: 2 } },
+        answers: { 'Alice Müller': { 1: "1", 2: "14" } },
         student: 'Hans Schmitz',
       },
     ];
     const expected = {
       'alice-mueller': [['Alice Müller'], ['Hans Schmitz', '1:a', '2:b']],
-      'hans-schmitz': [['Hans Schmitz'], ['Alice Müller', '1:a', '2:b']],
+      'hans-schmitz': [['Hans Schmitz'], ['Alice Müller', '1:a', '2:n']],
     };
     // when
     const result = courseService.bringStudentAnswersIntoArrayFormat(given);

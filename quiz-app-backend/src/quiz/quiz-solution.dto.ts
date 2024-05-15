@@ -13,7 +13,7 @@ export class QuizSolutionDto {
   @IsObject()
   answers: {
     [s: string]: {
-      [n: number]: number;
+      [n: number]: number | string;
     };
   };
 }

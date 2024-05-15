@@ -145,13 +145,21 @@ export class CourseService {
     return objContainsArrays;
   }
 
-  getAnswerMapping(num: number): string {
-    if (num < 1 || num > 21) {
+  getAnswerMapping(num: number | string): string {
+    let numToCalculate = typeof num === 'number' ? num : undefined;
+
+    if(typeof num === 'string') {
+      let parsedNumber = parseInt(num);
+      if (isNaN(parsedNumber)) return '';
+      numToCalculate = parsedNumber;
+    }
+
+    if (numToCalculate < 1 || numToCalculate > 21) {
       return '';
     }
 
     // Berechne den entsprechenden Buchstaben im Alphabet
-    const charCode = 'a'.charCodeAt(0) + num - 1;
+    const charCode = 'a'.charCodeAt(0) + numToCalculate - 1;
     return String.fromCharCode(charCode);
   }
 
