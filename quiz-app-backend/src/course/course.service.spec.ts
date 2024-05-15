@@ -144,17 +144,17 @@ describe('CourseService', () => {
     // given
     const given = [
       {
-        answers: { 'Hans Schmitz': { 1: "1", 2: "2", 3: null } },
+        answers: { 'Hans Schmitz': { 1: "1", 2: null , 3: "2" } },
         student: 'Alice Müller',
       },
       {
-        answers: { 'Alice Müller': { 1: "1", 2: "14", 3: null } },
+        answers: { 'Alice Müller': { 1: "1", 2: null, 3: "14" } },
         student: 'Hans Schmitz',
       },
     ];
     const expected = {
-      'alice-mueller': [['Alice Müller'], ['Hans Schmitz', '1:a', '2:b', '3:']],
-      'hans-schmitz': [['Hans Schmitz'], ['Alice Müller', '1:a', '2:n', '3:']],
+      'alice-mueller': [['Alice Müller'], ['Hans Schmitz', '1:a', '3:b']],
+      'hans-schmitz': [['Hans Schmitz'], ['Alice Müller', '1:a', '3:n']],
     };
     // when
     const result = courseService.bringStudentAnswersIntoArrayFormat(given);
@@ -167,12 +167,12 @@ describe('CourseService', () => {
   it('should bring the answers into array format', () => {
     // given
     const given = {
-      'alice-mueller': [['Alice Müller'], ['Hans Schmitz', '1:a', '2:b', '3:']],
-      'hans-schmitz': [['Hans Schmitz'], ['Alice Müller', '1:a', '2:b', "3:"]],
+      'alice-mueller': [['Alice Müller'], ['Hans Schmitz', '1:a', '3:b']],
+      'hans-schmitz': [['Hans Schmitz'], ['Alice Müller', '1:a', '3:n']],
     };
     const expected = {
-      'alice-mueller': 'Alice Müller\nHans Schmitz;1:a,2:b,3:',
-      'hans-schmitz': 'Hans Schmitz\nAlice Müller;1:a,2:b,3:',
+      'alice-mueller': 'Alice Müller\nHans Schmitz;1:a,3:b',
+      'hans-schmitz': 'Hans Schmitz\nAlice Müller;1:a,3:n',
     };
     // when
     const result = courseService.createAnswersCsvStrings(given);

@@ -131,8 +131,10 @@ export class CourseService {
         const array2 = [answeringStudentName];
         Object.keys(studentAnswer.answers[answeringStudentName]).forEach(
           (questionNumber) => {
+            const questionAnswer = studentAnswer.answers[answeringStudentName][questionNumber];
+            if(questionAnswer === null) return;
             array2.push(
-              `${questionNumber}:${this.getAnswerMapping(studentAnswer.answers[answeringStudentName][questionNumber])}`,
+              `${questionNumber}:${this.getAnswerMapping(questionAnswer)}`,
             );
           },
         );
@@ -145,9 +147,7 @@ export class CourseService {
     return objContainsArrays;
   }
 
-  getAnswerMapping(num: number | string | null): string {
-    if(num === null) return '';
-
+  getAnswerMapping(num: number | string): string {
     let numToCalculate = typeof num === 'number' ? num : undefined;
 
     if(typeof num === 'string') {
