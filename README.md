@@ -1,6 +1,6 @@
 # Quiz-App
 
-# !!Die Ausarbeitung befindet sich der [Ausarbeitung.md](Ausarbeitung.md)!!
+# !!Die Ausarbeitung befindet sich der [Ausarbeitung.md](schriftliche-ausarbeitungen%2FAusarbeitung.md)!!
 
 ## Inhaltsverzeichnis
 1. [Installation und Setup](#installation-und-setup)
