@@ -100,18 +100,18 @@ wiederspiegeln sollen. Ein Modul dient in NestJS allerdings lediglich zur Kapsel
 von Abhängigkeiten. Deshalb wurden, falls nötig, noch Controller zum Management der HTTP-Routen, Services zur 
 Bereitstellung der Funktionalitäten und DTOs als Objekte zu Datenhaltung erzeugt. Dabei entstanden folgende Module:
 - Das `Course`-Modul, welches sich um die Verwaltung einzelner Kurse kümmert. Hier können Kurse abgerufen oder erstellt
-werden. Außerdem können hier die Quiz-Ergebnisse eines Kurses als ZIP-Datei abgerufen werden. 
+werden. Außerdem können hier die Quiz-Ergebnisse eines Kurses als ZIP-Datei abgerufen werden. \
 ![course-endpoint.svg](images%2Fcourse-endpoint.svg)
 - Das `Student`-Modul, welches die Möglichkeit bietet, Studenten zu einem Kurs per CSV-Datei hinzuzufügen und die 
-jeweiligen Studenten innerhalb eines Kurses zu erhalten.
+jeweiligen Studenten innerhalb eines Kurses zu erhalten. \
 ![student-endpoint.svg](images%2Fstudent-endpoint.svg)
 - Das `Quiz`-Modul. Hier können neue Quizzes hinzugefügt werden. Es ist zudem möglich, die Fragen eines Quizzes ohne
 dessen Antworten zu erhalten. Zudem kann man als Student seine Lösung dem Quiz hinzufügen. Außerdem kann man den
-Bearbeitungszeitraum eines Quizzes abfragen und ändern. 
+Bearbeitungszeitraum eines Quizzes abfragen und ändern. \
 ![quiz-endpoint.svg](images%2Fquiz-endpoint.svg)
 - Das `Auth` Modul bietet die Möglichkeit, sich mit dem richtigen Nutzernamen und Passwort einzuloggen. \
 ![auth-endpoint.svg](images%2Fauth-endpoint.svg)
-- Das `Mailer` Modul stellt die technische Funktionalität zum Versenden von E-Mails bereit.
+- Das `Mailer` Modul stellt die technische Funktionalität zum Versenden von E-Mails bereit. \
 
 Um nun im Frontend die Informationen bereitzustellen, welche Routen unter welchem Pfad zur Verfügung stehen, wurde
 das OpenAPI Tool genutzt, um diese Informationen in einem Ordner im Frontend zur Verfügung zu stellen. Dafür wurde der
