@@ -137,7 +137,7 @@ umgesetzt werden. Es mussten allerdings an manchen Stellen auch Kompromisse eing
 Admin-Bereich ist zwar mit einer Login-Maske geschützt, allerdings kann diese leicht durch das Setzen eines Attributes
 im lokalen Browser-Speicher umgangen werden. Außerdem ist es eher unüblich, Backend und Frontend innerhalb eines 
 Containers auszuspielen. Dieser Kompromiss wurde zur Verringerung der Komplexität im Betrieb der Anwendung eingegangen.
-Die Konfiguration der Routen in NGINX wurde gestaltete sich durch diesen Kompromiss besonders schwierig.
+Die Konfiguration der Routen in NGINX gestaltete sich durch diesen Kompromiss besonders schwierig.
 Als besonders einfach und intuitiv gestaltete sich sowohl das Versenden von E-Mails innerhalb der Anwendung, als auch
 die automatische Code-Erzeugung durch OpenAPI, um Schnittstellen zwischen Frontend und Backend zu erzeugen.
 
