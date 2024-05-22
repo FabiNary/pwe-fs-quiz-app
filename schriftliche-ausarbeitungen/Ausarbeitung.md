@@ -109,7 +109,7 @@ jeweiligen Studenten innerhalb eines Kurses zu erhalten.
 dessen Antworten zu erhalten. Zudem kann man als Student seine Lösung dem Quiz hinzufügen. Außerdem kann man den
 Bearbeitungszeitraum eines Quizzes abfragen und ändern. 
 ![quiz-endpoint.svg](images%2Fquiz-endpoint.svg)
-- Das `Auth` Modul bietet die Möglichkeit, sich mit dem richtigen Nutzernamen und Passwort einzuloggen.
+- Das `Auth` Modul bietet die Möglichkeit, sich mit dem richtigen Nutzernamen und Passwort einzuloggen. \
 ![auth-endpoint.svg](images%2Fauth-endpoint.svg)
 - Das `Mailer` Modul stellt die technische Funktionalität zum Versenden von E-Mails bereit.
 
